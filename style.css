@@ -1,0 +1,222 @@
+:root {
+    --bg: #1e1e24;
+    --card-bg: #2b2b36;
+    --text: #f0f0f5;
+    --lines: #ffffff;
+    --accent: #ff9f1c;
+    --dot-text: #000000;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    margin: 0;
+}
+
+h1 {
+    margin-bottom: 10px;
+}
+
+p {
+    color: #aaa;
+    margin-bottom: 30px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 20px;
+    width: 100%;
+    max-width: 900px;
+}
+
+.card {
+    background: var(--card-bg);
+    border-radius: 8px;
+    /* AUMENTADO: padding-bottom de 40px para 60px */
+    padding: 20px 10px 60px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid #444;
+    position: relative; /* Necessário para o posicionamento absoluto funcionar bem */
+}
+
+    .card:hover {
+        border-color: var(--accent);
+    }
+
+.chord-name {
+    font-size: 2em;
+    font-weight: bold;
+    color: var(--accent);
+    margin-bottom: 5px;
+}
+
+/* --- ÁREA DO DESENHO --- */
+.fretboard {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    width: 120px;
+    height: 140px;
+    border-top: 5px solid var(--lines);
+    position: relative;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+/* Cordas */
+.string {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--lines);
+    transform: translateX(-50%);
+    z-index: 2;
+}
+
+/* Trastes */
+.fret {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--lines);
+    z-index: 1;
+}
+
+/* Pestana (Cápsula) */
+.barre {
+    position: absolute;
+    height: 20px;
+    background: var(--accent);
+    border-radius: 11px;
+    z-index: 5;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--dot-text);
+    font-weight: bold;
+    font-size: 13px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+/* Bolinhas dos dedos */
+.dot {
+    width: 20px;
+    height: 20px;
+    background: var(--accent);
+    color: var(--dot-text);
+    border-radius: 50%;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 13px;
+    font-weight: bold;
+    font-family: sans-serif;
+}
+
+/* --- MARCADORES INFERIORES (X e O) --- */
+.marker {
+    position: absolute;
+    bottom: -20px;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+    /* Estilo para corda abafada (X) */
+    .marker.muted {
+        /* Usei 'Arial' ou sans-serif para garantir um X geométrico */
+        font-family: Arial, sans-serif;
+        font-size: 16px; /* Tamanho equilibrado com as bolinhas */
+        font-weight: bold;
+        color: #ffffff; /* Branco para ficar nítido */
+        opacity: 0.6; /* Leve transparência para indicar que é "mudo" */
+    }
+
+    /* Estilo para a Tônica (Bolinha Cheia) */
+    .marker.root {
+        width: 14px;
+        height: 14px;
+        background: #fff;
+        border-radius: 50%;
+        /* Adicionei box-shadow leve para dar o mesmo acabamento do X */
+    }
+
+    /* Estilo para as outras cordas (Bolinha Vazia) */
+    .marker.played {
+        width: 12px;
+        height: 12px;
+        border: 2px solid #fff;
+        border-radius: 50%;
+        background: transparent;
+    }
+.controls {
+    font-size: 0.9em;
+    color: #888;
+    /* Posicionamento absoluto para fixar no rodapé */
+    position: absolute;
+    bottom: 15px; /* Fica 15px acima da borda inferior */
+    font-weight: 500;
+}
+
+/* --- ESTILO DAS ABAS --- */
+.tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+    .tabs button {
+        background: transparent;
+        border: 1px solid #444;
+        color: #888;
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-family: 'Arial', sans-serif;
+    }
+
+        .tabs button:hover {
+            border-color: var(--accent);
+            color: var(--text);
+        }
+
+        /* Estado Ativo (Selecionado) */
+        .tabs button.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #000; /* Texto preto para contraste no laranja */
+            font-weight: bold;
+            box-shadow: 0 0 10px rgba(255, 159, 28, 0.4);
+        }
+/* --- NÚMERO DA CASA LATERAL --- */
+.fret-number {
+    position: absolute;
+    left: -25px; /* Fica à esquerda do braço */
+    top: 8px; /* Alinhado com a primeira casa desenhada */
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--accent); /* Cor laranja para destaque */
+    font-family: 'Arial', sans-serif;
+}
+
+/* Quando o acorde NÃO começa na casa 1, a borda do topo deve ser fina */
+.fretboard.shifted {
+    border-top: 1px solid var(--lines); /* Borda fina igual aos trastes */
+}
