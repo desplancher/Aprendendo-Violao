@@ -4,6 +4,8 @@
     --text: #f0f0f5;
     --lines: #ffffff;
     --accent: #ff9f1c;
+    --success: #2ecc71;
+    --error: #e74c3c;
     --dot-text: #000000;
 }
 
@@ -25,6 +27,7 @@ h1 {
 p {
     color: #aaa;
     margin-bottom: 30px;
+    text-align: center;
 }
 
 .grid {
@@ -38,27 +41,59 @@ p {
 .card {
     background: var(--card-bg);
     border-radius: 8px;
-    /* AUMENTADO: padding-bottom de 40px para 60px */
     padding: 20px 10px 60px 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
     border: 1px solid #444;
-    position: relative; /* Necessário para o posicionamento absoluto funcionar bem */
+    position: relative;
+    transition: transform 0.2s, border-color 0.2s;
+    cursor: default;
 }
 
     .card:hover {
         border-color: var(--accent);
+        transform: translateY(-5px);
     }
 
+    /* Estados do Quiz */
+    .card.quiz-option {
+        cursor: pointer;
+    }
+
+    .card.correct {
+        border: 2px solid var(--success);
+        box-shadow: 0 0 15px rgba(46, 204, 113, 0.4);
+    }
+
+    .card.wrong {
+        border: 2px solid var(--error);
+        opacity: 0.6;
+    }
+
+    .card.hide-name .controls {
+        display: none;
+    }
+
+/* TÍTULO COM MARGEM SEGURA */
 .chord-name {
     font-size: 2em;
     font-weight: bold;
     color: var(--accent);
-    margin-bottom: 5px;
+    margin-bottom: 20px; /* Margem aumentada para segurança */
+    z-index: 20;
+    position: relative;
+    line-height: 1;
 }
 
-/* --- ÁREA DO DESENHO --- */
+.controls {
+    font-size: 0.9em;
+    color: #888;
+    position: absolute;
+    bottom: 15px;
+    font-weight: 500;
+}
+
 .fretboard {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
@@ -68,10 +103,24 @@ p {
     border-top: 5px solid var(--lines);
     position: relative;
     margin-bottom: 10px;
-    margin-top: 10px;
+    margin-top: 5px;
 }
 
-/* Cordas */
+    .fretboard.shifted {
+        border-top: 1px solid var(--lines);
+        margin-top: 15px; /* Compensa a falta da borda grossa */
+    }
+
+.fret-number {
+    position: absolute;
+    left: -25px;
+    top: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--accent);
+    font-family: 'Arial', sans-serif;
+}
+
 .string {
     position: absolute;
     top: 0;
@@ -82,7 +131,6 @@ p {
     z-index: 2;
 }
 
-/* Trastes */
 .fret {
     position: absolute;
     left: 0;
@@ -92,7 +140,6 @@ p {
     z-index: 1;
 }
 
-/* Pestana (Cápsula) */
 .barre {
     position: absolute;
     height: 20px;
@@ -109,7 +156,6 @@ p {
     box-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
 
-/* Bolinhas dos dedos */
 .dot {
     width: 20px;
     height: 20px;
@@ -127,7 +173,6 @@ p {
     font-family: sans-serif;
 }
 
-/* --- MARCADORES INFERIORES (X e O) --- */
 .marker {
     position: absolute;
     bottom: -20px;
@@ -137,26 +182,21 @@ p {
     align-items: center;
 }
 
-    /* Estilo para corda abafada (X) */
     .marker.muted {
-        /* Usei 'Arial' ou sans-serif para garantir um X geométrico */
         font-family: Arial, sans-serif;
-        font-size: 16px; /* Tamanho equilibrado com as bolinhas */
+        font-size: 16px;
         font-weight: bold;
-        color: #ffffff; /* Branco para ficar nítido */
-        opacity: 0.6; /* Leve transparência para indicar que é "mudo" */
+        color: #ffffff;
+        opacity: 0.6;
     }
 
-    /* Estilo para a Tônica (Bolinha Cheia) */
     .marker.root {
         width: 14px;
         height: 14px;
         background: #fff;
         border-radius: 50%;
-        /* Adicionei box-shadow leve para dar o mesmo acabamento do X */
     }
 
-    /* Estilo para as outras cordas (Bolinha Vazia) */
     .marker.played {
         width: 12px;
         height: 12px;
@@ -164,20 +204,13 @@ p {
         border-radius: 50%;
         background: transparent;
     }
-.controls {
-    font-size: 0.9em;
-    color: #888;
-    /* Posicionamento absoluto para fixar no rodapé */
-    position: absolute;
-    bottom: 15px; /* Fica 15px acima da borda inferior */
-    font-weight: 500;
-}
 
-/* --- ESTILO DAS ABAS --- */
 .tabs {
     display: flex;
     gap: 10px;
     margin-bottom: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
     .tabs button {
@@ -197,26 +230,122 @@ p {
             color: var(--text);
         }
 
-        /* Estado Ativo (Selecionado) */
         .tabs button.active {
             background: var(--accent);
             border-color: var(--accent);
-            color: #000; /* Texto preto para contraste no laranja */
+            color: #000;
             font-weight: bold;
             box-shadow: 0 0 10px rgba(255, 159, 28, 0.4);
         }
-/* --- NÚMERO DA CASA LATERAL --- */
-.fret-number {
-    position: absolute;
-    left: -25px; /* Fica à esquerda do braço */
-    top: 8px; /* Alinhado com a primeira casa desenhada */
-    font-size: 14px;
-    font-weight: bold;
-    color: var(--accent); /* Cor laranja para destaque */
-    font-family: 'Arial', sans-serif;
+
+/* --- UI DO QUIZ --- */
+.quiz-container {
+    width: 100%;
+    max-width: 900px;
+    text-align: center;
+    margin-bottom: 20px;
 }
 
-/* Quando o acorde NÃO começa na casa 1, a borda do topo deve ser fina */
-.fretboard.shifted {
-    border-top: 1px solid var(--lines); /* Borda fina igual aos trastes */
+.quiz-score {
+    font-size: 1.2em;
+    color: #aaa;
+    margin-bottom: 10px;
 }
+
+    .quiz-score span {
+        color: var(--success);
+        font-weight: bold;
+    }
+
+.quiz-question {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+}
+
+    .quiz-question strong {
+        color: var(--accent);
+    }
+
+/* --- MENU DE SELEÇÃO DO QUIZ --- */
+.quiz-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    max-width: 400px;
+}
+
+.btn-menu {
+    background: var(--card-bg);
+    border: 1px solid #444;
+    color: var(--text);
+    padding: 15px;
+    font-size: 1.1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+    .btn-menu:hover {
+        border-color: var(--accent);
+        background: #333;
+        transform: translateX(5px);
+    }
+
+/* --- ÁREA DE JOGO (NOVA LÓGICA) --- */
+.quiz-game-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+}
+
+/* Esconde o Título (Letra Grande) e o Rodapé (Nome Completo) na carta de pergunta */
+.card.question-card .chord-name,
+.card.question-card .controls {
+    display: none;
+}
+/* Remove interação da carta de pergunta */
+.card.question-card {
+    pointer-events: none;
+    border-color: var(--lines);
+    transform: scale(1.1); /* Um pouco maior para destaque */
+}
+
+/* Grid de Botões de Resposta */
+.quiz-options-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    width: 100%;
+    max-width: 400px;
+}
+
+.btn-option {
+    background: var(--card-bg);
+    border: 2px solid #444;
+    color: var(--text);
+    padding: 15px;
+    font-size: 1.5em; /* Letra grande (C, Dm, etc) */
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+    .btn-option:hover {
+        border-color: var(--accent);
+    }
+
+    /* Estados de Acerto/Erro nos botões */
+    .btn-option.correct {
+        background: var(--success);
+        border-color: var(--success);
+        color: #fff;
+    }
+
+    .btn-option.wrong {
+        background: var(--error);
+        border-color: var(--error);
+        opacity: 0.5;
+    }
